@@ -105,9 +105,28 @@ class GameCanvas extends React.Component {
 
     let c = document.getElementById("canvas");
     this.ctx = c.getContext("2d");
+    this.bgImg = new Image();
+    this.bgImg.src = "assets/bg.jpg";
+    
+    //loading notesImg Array
+    this.notesImg = [];
+    let i;
+    for (i = 1; i < 7; i++){
+      this.notesImg[i] = new Image();
+      this.notesImg[i].src = "assets/notes/note" + i + ".png";
+    }
+
     this.song = document.getElementsByClassName("song")[0]; 
     this.song.muted = true;
+
     this.startLoop();
+
+
+
+  
+   
+    
+  
   }
 
   startLoop() {
@@ -156,6 +175,8 @@ class GameCanvas extends React.Component {
     let now =  this.currentSongTime  ;
     let s = this.speed;
     ctx.clearRect(0, 0, this.width, this.height);
+    ctx.drawImage(this.bgImg, 0, 0, this.width, this.height);
+
     ctx.beginPath();
     ctx.strokeStyle = "white";
     
@@ -168,16 +189,17 @@ class GameCanvas extends React.Component {
       let noteFrame = noteFrames[i];
       let j;
       let y =  550 + now * s - i *s;
-      let squareSize = y * 1/10;
+      let squareSize = 200; //y * 1/10;
       ctx.strokeStyle = "red ";
       if( y > 550 )
        continue;
       for (j=1; j < 7; j++ ){
         if(noteFrame[j][0] == 1 ){
-          let distCoef = 80 + 40*y/550;
-          let anchor = 80 - y/550 * 200 ;
-          let x = j*distCoef + anchor ;
-          ctx.rect(x, y - squareSize/2 , squareSize/2 +10, squareSize/2 +10);
+          let distCoef =100;
+          let x = j*distCoef - 20;
+          if ( j > 3 )
+            x = j*distCoef + 20;  
+          ctx.drawImage(this.notesImg[j] ,x - squareSize/2 + 40 , y , squareSize/2 +10, squareSize/2);
           ctx.stroke();
         }
         if(noteFrame[j][1] > 0 ) {       
