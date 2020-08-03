@@ -162,21 +162,24 @@ class GameCanvas extends React.Component {
     //getting what should now closer frame in the song
 
     let songFrame = parseInt(now/step) * step; //CHECCCK IT
-    
-
-    
+  
     for( i = songFrame; i < songFrame + this.majorRange * step; i = i + step ){
   
       let noteFrame = noteFrames[i];
       let j;
       let y =  550 + now * s - i *s;
+      let squareSize = y * 1/10;
       ctx.strokeStyle = "red ";
       if( y > 550 )
        continue;
       for (j=1; j < 7; j++ ){
-        if(noteFrame[j][0] == 1 )
-         ctx.rect(j*100, y , 10, 10);
-         ctx.stroke();
+        if(noteFrame[j][0] == 1 ){
+          let distCoef = 80 + 40*y/550;
+          let anchor = 80 - y/550 * 200 ;
+          let x = j*distCoef + anchor ;
+          ctx.rect(x, y - squareSize/2 , squareSize/2 +10, squareSize/2 +10);
+          ctx.stroke();
+        }
         if(noteFrame[j][1] > 0 ) {       
           if( this.lastSustainedInserted != i ) {
             this.arrayOfSustained.push([i,j,noteFrame[j][1]]);
@@ -233,10 +236,17 @@ class GameCanvas extends React.Component {
       ctx.beginPath();
       ctx.moveTo(j*100, y);
       let an;
-      for( an = 0; an < y; an ++) {
-        ctx.lineTo(j*100 + 20*an, an - 30);
+      for( an = 0; an < 100; an = an + 2) {
+        if ( an%2 ===0) 
+        {
+          ctx.lineTo(j*100 +10, 550 - an);
+        }
+        else {
+          ctx.lineTo(j*100 -10, 550 - an);
+        }
+
       }
-      ctx.lineTo(j*100, finalY);
+     // ctx.lineTo(j*100, finalY);
      ctx.closePath();
       ctx.stroke(); 
       if ( finalY > 720 ) {
